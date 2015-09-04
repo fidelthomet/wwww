@@ -29,11 +29,44 @@ $(function() {
 	getData();
 	
 	for( var age in ageband){
-		$("#ages").append('<div class="checkbox"><label><input type="checkbox" value="">'+ageband[age]+'</label></div>');
+		$("#ages").append('<div class="checkbox"><label><input type="checkbox" class="checkAge" value="'+age+'">'+ageband[age]+'</label></div>');
 	};
 	for( var gender in genderNames){
-		$("#genders").append('<div class="checkbox"><label><input type="checkbox" value="">'+genderNames[gender]+'</label></div>');
+		if (gender!="b")
+			$("#genders").append('<div class="checkbox"><label><input type="checkbox" class="checkGender" value="'+gender+'">'+genderNames[gender]+'</label></div>');
 	};
+
+	$(".checkAge, .checkGender").change(function(){
+
+
+
+		var ages = []
+		$(".checkAge").each(function(i, el){
+			if($(el).prop('checked')){
+				ages.push(ageband[el.value])	
+			}
+		})
+
+		if(!ages.length){
+			ages=null
+		}
+
+		var genders = []
+		$(".checkGender").each(function(i, el){
+			if($(el).prop('checked')){
+				genders.push(el.value)	
+			}
+		})
+		var gender = "";
+		if(genders.length!=1){
+			gender = "b"
+		} else {
+			console.log(genders)
+			gender = genders[0]
+		}
+
+		drawSympathy(getValues(gender,ages))
+	})
 })
 
 var data;
