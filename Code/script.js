@@ -5,7 +5,7 @@ var ageband = ["18-25", "26-35", "36-49", "50-65", "65+"],
 		b: "-"
 	},
 	width, height, sympathyWidth, sympathyHeight,
-	svg, bar, barMax
+	svg, bar, barMax,
 	barHeight = 40
 
 $(function() {
@@ -32,16 +32,14 @@ function initGraph() {
 	sympathyHeight = height - 120
 
 	barMax = d3.scale.linear()
-    .range([0, sympathyWidth])
-    .domain([0, 1])
+		.range([0, sympathyWidth])
+		.domain([0, 1])
 
 	barChart = d3.select("body").append("svg")
 		.append("g")
 		.attr("class", "sympathy")
 
-	
 
-	
 
 	drawSympathy(getValues())
 }
@@ -71,7 +69,6 @@ function getValues(gender, age) {
 	});
 
 	var values = []
-
 
 	for (var key in sorted) {
 		var val = {}
@@ -105,6 +102,8 @@ function drawSympathy(selectedData) {
 		.attr("class", "bar")
 
 	bar.append("rect")
-      .attr("width", function(d) { return barMax(d.sympathy); })
-      .attr("height", barHeight - 1);
+		.attr("width", function(d) {
+			return barMax(d.sympathy);
+		})
+		.attr("height", barHeight - 1);
 }
