@@ -1,4 +1,8 @@
 svg{
 	height: 500px;
-	wisth: 700px;
+	width: 850px;
+}
+
+.donut{
+	transform: translate(540px,250px);
 }
