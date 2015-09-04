@@ -9,7 +9,14 @@ var ageband = ["18-25", "26-35", "36-49", "50-65", "65+"],
 	barHeight = 40
 
 $(function() {
-	getData()
+	getData();
+	
+	for( var age in ageband){
+		$("#ages").append('<div class="checkbox"><label><input type="checkbox" value="">'+ageband[age]+'</label></div>');
+	};
+	for( var gender in genderNames){
+		$("#genders").append('<div class="checkbox"><label><input type="checkbox" value="">'+genderNames[gender]+'</label></div>');
+	};
 })
 
 var data;
@@ -35,7 +42,7 @@ function initGraph() {
     .range([0, sympathyWidth])
     .domain([0, 1])
 
-	barChart = d3.select("body").append("svg")
+	barChart = d3.select("#chart").append("svg")
 		.append("g")
 		.attr("class", "sympathy")
 
