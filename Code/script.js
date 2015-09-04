@@ -1,4 +1,4 @@
-var ageband = ["18-25", "26-35", "36-49", "50-65", "65+"],
+var ageband = ["18-24", "25-34", "35-44", "45-54", "55-64", "65-74", "75+"],
 	genderNames = {
 		m: "männlich",
 		f: "weiblich",
@@ -27,17 +27,21 @@ $(function() {
 	getData();
 	
 	for( var age in ageband){
-		$("#ages").append('<div class="checkbox"><label><input type="checkbox" value="">'+ageband[age]+'</label></div>');
+		$("#ages").append(
+			'<div class="checkbox"><label><input type="checkbox" value="">'
+			+ageband[age]+'</label></div>');
 	};
 	for( var gender in genderNames){
-		$("#genders").append('<div class="checkbox"><label><input type="checkbox" value="">'+genderNames[gender]+'</label></div>');
+		$("#genders").append(
+			'<div class="checkbox"><label><input type="checkbox" value="">'
+			+genderNames[gender]+'</label></div>');
 	};
 })
 
 var data;
 
 function getData() {
-	d3.csv("data/example.csv", function(error, d) {
+	d3.csv("data/data_groups.csv", function(error, d) {
 		if (error) throw error;
 
 		data = d
@@ -100,7 +104,7 @@ function getValues(gender, age) {
 			}
 			sorted[d.Partei].push({
 				sympathy: d.Sympathie,
-				count: d.Anzahl
+				probability: d.Wahlwahrscheinlichkeit
 			})
 		}
 	});
@@ -113,12 +117,12 @@ function getValues(gender, age) {
 		var total = 0
 
 		sorted[key].forEach(function(d) {
-			total += parseInt(d.count)
+			total += parseFloat(d.probability)
 		})
 		val.party = key
 		val.sympathy = 0
 		sorted[key].forEach(function(d) {
-			val.sympathy += (parseFloat(d.count) / total) * parseFloat(d.sympathy)
+			val.sympathy += (parseFloat(d.probability) / total) * parseFloat(d.sympathy)
 		})
 		values.push(val)
 	}
