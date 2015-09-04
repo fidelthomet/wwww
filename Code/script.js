@@ -7,7 +7,8 @@ var ageband = ["18-24", "25-34", "35-44", "45-54", "55-64", "65-74", "75+"],
 	width, height, sympathyWidth, sympathyHeight,
 	svg, bar, barMax, arc, pie, radius,
 	barHeight = 40,
-	barChart, donutChart
+	barChart, donutChart, 
+	totalSympathy
 
 var colors = {
 	SP: "#FF173E",
@@ -20,22 +21,52 @@ var colors = {
 	BDP: "#FFDF00",
 	PdA: "#000",
 	AL: "#000",
-	EVP: "#FCDD04"
+	EVP: "#FCDD04",
+	none: "#FFF"
 }
 
 $(function() {
 	getData();
 	
 	for( var age in ageband){
-		$("#ages").append(
-			'<div class="checkbox"><label><input type="checkbox" value="">'
-			+ageband[age]+'</label></div>');
+		$("#ages").append('<div class="checkbox"><label><input type="checkbox" class="checkAge" value="'+age+'">'+ageband[age]+'</label></div>');
 	};
 	for( var gender in genderNames){
-		$("#genders").append(
-			'<div class="checkbox"><label><input type="checkbox" value="">'
-			+genderNames[gender]+'</label></div>');
+		if (gender!="b")
+			$("#genders").append('<div class="checkbox"><label><input type="checkbox" class="checkGender" value="'+gender+'">'+genderNames[gender]+'</label></div>');
 	};
+
+	$(".checkAge, .checkGender").change(function(){
+
+
+
+		var ages = []
+		$(".checkAge").each(function(i, el){
+			if($(el).prop('checked')){
+				ages.push(ageband[el.value])	
+			}
+		})
+
+		if(!ages.length){
+			ages=null
+		}
+
+		var genders = []
+		$(".checkGender").each(function(i, el){
+			if($(el).prop('checked')){
+				genders.push(el.value)	
+			}
+		})
+		var gender = "";
+		if(genders.length!=1){
+			gender = "b"
+		} else {
+			console.log(genders)
+			gender = genders[0]
+		}
+
+		drawSympathy(getValues(gender,ages))
+	})
 })
 
 var data;
@@ -127,6 +158,11 @@ function getValues(gender, age) {
 		values.push(val)
 	}
 
+	totalSympathy = 0
+	values.forEach(function(d){
+		totalSympathy+=d.sympathy
+	})
+
 	return (values)
 }
 
@@ -155,6 +191,7 @@ function drawSympathy(selectedData) {
 		})
 
 	//results
+	selectedData.push({party:"none",sympathy: .5*totalSympathy})
 	var g = donutChart.selectAll(".arc")
 		.data(pie(selectedData))
 		.enter().append("g")
@@ -168,9 +205,10 @@ function drawSympathy(selectedData) {
 		});
 
 	g.append("text")
-	    .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
+	    .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ") rotate(120)"; })
 	    .attr("dy", ".35em")
+
 	    .style("text-anchor", "middle")
-	    .text(function(d) { return d.data.party; });
+	    .text(function(d) { if(d.data.party=="none"){return ""} else return d.data.party; });
 
 }

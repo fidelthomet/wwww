@@ -4,5 +4,5 @@ svg{
 }
 
 .donut{
-	transform: translate(540px,250px);
+	transform: translate(540px,250px) rotate(-120deg);
 }
