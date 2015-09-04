@@ -46,7 +46,7 @@ function initGraph() {
 	sympathyWidth = width / 2 - 40
 	sympathyHeight = height - 120
 
-	radius = Math.min(sympathyWidth,sympathyHeight)/2
+	radius = Math.min(sympathyWidth, sympathyHeight) / 2
 
 	barMax = d3.scale.linear()
 		.range([0, sympathyWidth])
@@ -62,7 +62,7 @@ function initGraph() {
 
 	arc = d3.svg.arc()
 		.outerRadius(radius - 10)
-		.innerRadius(radius - 70);
+		.innerRadius(radius - 130);
 
 	pie = d3.layout.pie()
 		.sort(null)
@@ -145,19 +145,21 @@ function drawSympathy(selectedData) {
 
 	//results
 	var g = donutChart.selectAll(".arc")
-      .data(pie(selectedData))
-    .enter().append("g")
-      .attr("class", "arc");
+		.data(pie(selectedData))
+		.enter().append("g")
+		.attr("class", "arc");
 
-  	g.append("path")
-      .attr("d", arc)
-      .attr("class", "arcDonut")
-      .style("fill", function(d) { return colors[d.data.party] });
+	g.append("path")
+		.attr("d", arc)
+		.attr("class", "arcDonut")
+		.style("fill", function(d) {
+			return colors[d.data.party]
+		});
 
-  // g.append("text")
-  //     .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
-  //     .attr("dy", ".35em")
-  //     .style("text-anchor", "middle")
-  //     .text(function(d) { return d.data.age; });
+	g.append("text")
+	    .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
+	    .attr("dy", ".35em")
+	    .style("text-anchor", "middle")
+	    .text(function(d) { return d.data.party; });
 
 }
