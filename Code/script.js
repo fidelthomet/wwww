@@ -1,10 +1,9 @@
 var ageband = ["18-24", "25-34", "35-44", "45-54", "55-64", "65-74", "75+"],
 	genderNames = ["männlich", "weiblich"],
-width, height, sympathyWidth, sympathyHeight,
-svg, bar, barMax, arc, pie, radius,
-barHeight = 40,
-	barChart, donutChart,
-	totalSympathy
+	width, height, sympathyWidth, sympathyHeight,
+	svg, bar, barMax, arc, pie, radius,
+	barHeight = 40,
+	barChart, donutChart
 
 var colors = {
 	SP: "#FF173E",
@@ -54,16 +53,23 @@ $(function() {
 	})
 })
 
-var data;
+var data,
+	groups;
 
 function getData() {
-	d3.csv("data/data_groups.csv", function(error, d) {
+	d3.csv("data/groups_anteil.csv", function(error, d) {
 		if (error) throw error;
 
-		data = d
+		groups = d;
 
-		initGraph()
-	})
+		d3.csv("data/data_groups.csv", function(error, d) {
+			if (error) throw error;
+
+			data = d;
+
+			initGraph();
+		});
+	});
 }
 
 function initGraph() {
@@ -115,45 +121,60 @@ function getValues(gender, age) {
 		age = ageband
 	}
 
+	var totalWeight = 0
+
+	groups.forEach( function(group){
+		if ((gender.indexOf(group.Geschlecht) != -1) && (age.indexOf(group.Alter) != -1)) {
+			totalWeight += parseFloat(group.Anteil)
+		}
+	})
+
 	var sorted = {}
+
 	data.forEach(function(d) {
-		console.log(d.Geschlecht)
-		console.log(gender.indexOf(d.Geschlecht))
+		//console.log(d.Geschlecht)
+		//console.log(d.Alter)
 		if ((gender.indexOf(d.Geschlecht) != -1) && (age.indexOf(d.Alter) != -1)) {
+			var weight = 0
+
+			groups.forEach( function(group){
+				if ((d.Geschlecht == group.Geschlecht) && (d.Alter == group.Alter)) {
+					weight += parseFloat(group.Anteil)
+				}
+			})
+
 			if (!sorted[d.Partei]) {
 				sorted[d.Partei] = []
 			}
 			sorted[d.Partei].push({
-				sympathy: d.Sympathie,
-				probability: d.Wahlwahrscheinlichkeit
+				sympathy: parseFloat(d.Sympathie),
+				probability: parseFloat(d.Wahlwahrscheinlichkeit),
+				weight: weight
 			})
 		}
 	});
+
+	//console.log(sorted)
 
 	var values = []
 
 	for (var key in sorted) {
 
-		var val = {}
-		var total = 0
+		var val = {
+			party: key,
+			sympathy: 0,
+			probability: 0
+		}
 
 		sorted[key].forEach(function(d) {
-			total += parseFloat(d.probability)
+			val.sympathy += d.sympathy * d.weight / totalWeight
+			val.probability += d.probability * d.weight / totalWeight
 		})
-		val.party = key
-		val.sympathy = 0
-		sorted[key].forEach(function(d) {
-			val.sympathy += (parseFloat(d.probability) / total) * parseFloat(d.sympathy)
-		})
+
 		values.push(val)
 	}
 
-	console.log(values)
-
-	totalSympathy = 0
-	values.forEach(function(d) {
-		totalSympathy += d.sympathy
-	})
+	//console.log(values)
 
 	return (values)
 }
@@ -183,6 +204,10 @@ function drawSympathy(selectedData) {
 		})
 
 	//results
+	var totalSympathy = 0
+	selectedData.forEach(function(d) {
+		totalSympathy += d.sympathy
+	})
 	selectedData.push({
 		party: "none",
 		sympathy: .5 * totalSympathy
