@@ -1,13 +1,9 @@
 var ageband = ["18-24", "25-34", "35-44", "45-54", "55-64", "65-74", "75+"],
-	genderNames = {
-		m: "männlich",
-		f: "weiblich",
-		b: "-"
-	},
-	width, height, sympathyWidth, sympathyHeight,
-	svg, bar, barMax, arc, pie, radius,
-	barHeight = 40,
-	barChart, donutChart, 
+	genderNames = ["männlich", "weiblich"],
+width, height, sympathyWidth, sympathyHeight,
+svg, bar, barMax, arc, pie, radius,
+barHeight = 40,
+	barChart, donutChart,
 	totalSympathy
 
 var colors = {
@@ -27,45 +23,34 @@ var colors = {
 
 $(function() {
 	getData();
-	
-	for( var age in ageband){
-		$("#ages").append('<div class="checkbox"><label><input type="checkbox" class="checkAge" value="'+age+'">'+ageband[age]+'</label></div>');
+
+	for (var age in ageband) {
+		$("#ages").append('<div class="checkbox"><label><input type="checkbox" class="checkAge" value="' + age + '">' + ageband[age] + '</label></div>');
 	};
-	for( var gender in genderNames){
-		if (gender!="b")
-			$("#genders").append('<div class="checkbox"><label><input type="checkbox" class="checkGender" value="'+gender+'">'+genderNames[gender]+'</label></div>');
+	for (var gender in genderNames) {
+		if (gender != "b")
+			$("#genders").append('<div class="checkbox"><label><input type="checkbox" class="checkGender" value="' + gender + '">' + genderNames[gender] + '</label></div>');
 	};
 
-	$(".checkAge, .checkGender").change(function(){
+	$(".checkAge, .checkGender").change(function() {
 
 
 
 		var ages = []
-		$(".checkAge").each(function(i, el){
-			if($(el).prop('checked')){
-				ages.push(ageband[el.value])	
+		$(".checkAge").each(function(i, el) {
+			if ($(el).prop('checked')) {
+				ages.push(ageband[el.value])
 			}
 		})
 
-		if(!ages.length){
-			ages=null
-		}
-
-		var genders = []
-		$(".checkGender").each(function(i, el){
-			if($(el).prop('checked')){
-				genders.push(el.value)	
+		var gender = []
+		$(".checkGender").each(function(i, el) {
+			if ($(el).prop('checked')) {
+				gender.push(genderNames[el.value])
 			}
 		})
-		var gender = "";
-		if(genders.length!=1){
-			gender = "b"
-		} else {
-			console.log(genders)
-			gender = genders[0]
-		}
 
-		drawSympathy(getValues(gender,ages))
+		drawSympathy(getValues(gender, ages))
 	})
 })
 
@@ -92,7 +77,7 @@ function initGraph() {
 
 	barMax = d3.scale.linear()
 		.range([0, sympathyWidth])
-		.domain([0, 1])
+		.domain([0, 10])
 
 	barChart = d3.select("#chart").append("svg")
 		.append("g")
@@ -116,20 +101,25 @@ function initGraph() {
 	drawSympathy(getValues())
 }
 
-// gender (String): m/f/b
+// gender (Array, String): m/f/b
 // age (Array, String) -> ageband: [ageband[0],ageband[1],...]
 function getValues(gender, age) {
 	if (!gender) {
-		gender = "b"
+		gender = genderNames
+	} else if (!gender.length) {
+		gender = genderNames
 	}
 	if (!age) {
+		age = ageband
+	} else if (!age.length) {
 		age = ageband
 	}
 
 	var sorted = {}
-
 	data.forEach(function(d) {
-		if ((d.Geschlecht == genderNames[gender] || gender == "b") && (age.indexOf(d.Alter) != -1)) {
+		console.log(d.Geschlecht)
+		console.log(gender.indexOf(d.Geschlecht))
+		if ((gender.indexOf(d.Geschlecht) != -1) && (age.indexOf(d.Alter) != -1)) {
 			if (!sorted[d.Partei]) {
 				sorted[d.Partei] = []
 			}
@@ -143,7 +133,7 @@ function getValues(gender, age) {
 	var values = []
 
 	for (var key in sorted) {
-		console.log(key)
+
 		var val = {}
 		var total = 0
 
@@ -158,9 +148,11 @@ function getValues(gender, age) {
 		values.push(val)
 	}
 
+	console.log(values)
+
 	totalSympathy = 0
-	values.forEach(function(d){
-		totalSympathy+=d.sympathy
+	values.forEach(function(d) {
+		totalSympathy += d.sympathy
 	})
 
 	return (values)
@@ -191,7 +183,10 @@ function drawSympathy(selectedData) {
 		})
 
 	//results
-	selectedData.push({party:"none",sympathy: .5*totalSympathy})
+	selectedData.push({
+		party: "none",
+		sympathy: .5 * totalSympathy
+	})
 	var g = donutChart.selectAll(".arc")
 		.data(pie(selectedData))
 		.enter().append("g")
@@ -205,10 +200,16 @@ function drawSympathy(selectedData) {
 		});
 
 	g.append("text")
-	    .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ") rotate(120)"; })
-	    .attr("dy", ".35em")
+		.attr("transform", function(d) {
+			return "translate(" + arc.centroid(d) + ") rotate(120)";
+		})
+		.attr("dy", ".35em")
 
-	    .style("text-anchor", "middle")
-	    .text(function(d) { if(d.data.party=="none"){return ""} else return d.data.party; });
+	.style("text-anchor", "middle")
+		.text(function(d) {
+			if (d.data.party == "none") {
+				return ""
+			} else return d.data.party;
+		});
 
 }
