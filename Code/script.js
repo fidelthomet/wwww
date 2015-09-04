@@ -7,7 +7,8 @@ var ageband = ["18-25", "26-35", "36-49", "50-65", "65+"],
 	width, height, sympathyWidth, sympathyHeight,
 	svg, bar, barMax, arc, pie, radius,
 	barHeight = 40,
-	barChart, donutChart
+	barChart, donutChart, 
+	totalSympathy
 
 var colors = {
 	SP: "#FF173E",
@@ -20,7 +21,8 @@ var colors = {
 	BDP: "#FFDF00",
 	PdA: "#000",
 	AL: "#000",
-	EVP: "#FCDD04"
+	EVP: "#FCDD04",
+	none: "#FFF"
 }
 
 $(function() {
@@ -123,6 +125,11 @@ function getValues(gender, age) {
 		values.push(val)
 	}
 
+	totalSympathy = 0
+	values.forEach(function(d){
+		totalSympathy+=d.sympathy
+	})
+
 	return (values)
 }
 
@@ -151,6 +158,7 @@ function drawSympathy(selectedData) {
 		})
 
 	//results
+	selectedData.push({party:"none",sympathy: .5*totalSympathy})
 	var g = donutChart.selectAll(".arc")
 		.data(pie(selectedData))
 		.enter().append("g")
@@ -164,9 +172,10 @@ function drawSympathy(selectedData) {
 		});
 
 	g.append("text")
-	    .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ")"; })
+	    .attr("transform", function(d) { return "translate(" + arc.centroid(d) + ") rotate(120)"; })
 	    .attr("dy", ".35em")
+
 	    .style("text-anchor", "middle")
-	    .text(function(d) { return d.data.party; });
+	    .text(function(d) { if(d.data.party=="none"){return ""} else return d.data.party; });
 
 }
