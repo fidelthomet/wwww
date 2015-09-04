@@ -93,12 +93,16 @@ function getValues(gender, age) {
 
 function drawSympathy(selectedData) {
 	barChart.attr("height", barHeight * selectedData.length);
+
+	$(".bar").remove()
+
 	bar = barChart.selectAll("g")
 		.data(selectedData)
 		.enter().append("g")
 		.attr("transform", function(d, i) {
 			return "translate(0," + i * barHeight + ")";
-		});
+		})
+		.attr("class", "bar")
 
 	bar.append("rect")
       .attr("width", function(d) { return barMax(d.sympathy); })
