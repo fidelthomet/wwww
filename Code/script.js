@@ -165,6 +165,7 @@ function drawSympathy(selectedData) {
 	$(".bar").remove()
 	$(".axis").remove()
 	$(".text").remove()
+	$(".tri").remove()
 
 	bar = barChart.selectAll("g")
 		.data(selectedData)
@@ -235,26 +236,31 @@ function drawSympathy(selectedData) {
 		.attr("class", "axis")
 		.call(probabilityAxis)
 
-	barChart.append("text").attr("transform", function(d) {
-			return "translate(" + (window.innerWidth / 2 - 30 - sympathyMax(5)) + ",20)";
-		})
+	var symLabel = barChart.append("text")
 		.attr("dy", ".35em")
-		.attr("dy", ".35em")
-		.style("text-anchor", "middle")
+		.attr("width", "200px")
+		.style("text-anchor", "right")
 		.text("Sympathiewerte")
 		.attr("class", "text labelSym")
+
+		console.log(symLabel[0][0].getBBox().width)
+
+		symLabel.attr("transform", function(d) {
+			return "translate(" + (window.innerWidth / 2 - 30 -  parseInt(symLabel[0][0].getBBox().width)) + ",20)";
+		})
+
 
 	$(".labelSym").click(function() {
 		sortBy = "sympathy"
 		redraw()
 	})
 
-	barChart.append("text").attr("transform", function(d) {
-			return "translate(" + (window.innerWidth / 2 + 30 + width / 2) + ",20)";
+
+	var probLabel = barChart.append("text").attr("transform", function(d) {
+			return "translate(" + (window.innerWidth / 2 + 30) + ",20)";
 		})
 		.attr("dy", ".35em")
-		.attr("dy", ".35em")
-		.style("text-anchor", "middle")
+		.style("text-anchor", "left")
 		.text("Wähleranteil")
 		.attr("class", "text labelProb")
 
@@ -263,6 +269,15 @@ function drawSympathy(selectedData) {
 		sortBy = "probability"
 		redraw()
 	})
+
+	barChart.append("polygon").attr("transform", function(d) {
+		if (sortBy == "sympathy")
+			return "translate(" + (window.innerWidth / 2 - 38 - symLabel[0][0].getBBox().width) + ",22) scale(1, -1)"
+		else
+			return "translate(" + (window.innerWidth / 2 + 33 + probLabel[0][0].getBBox().width) + ",22) scale(1, -1)"
+	})
+	.attr("points", "3 0 6 4 0 4 ")
+	.attr("class", "tri")
 
 }
 

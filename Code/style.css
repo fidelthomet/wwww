@@ -1,5 +1,5 @@
 svg{
-	height: 360px;
+	height: 405px;
 	width: 100%;
 	margin-top: 40px;
 }
@@ -60,6 +60,8 @@ header, #controls {
 	margin-top: 4px;
 	height: 38px;
 }
+
+
 
 .checkGender:first-child, .checkAge:first-child{
 	border-radius: 5px 0px 0px 5px;
