@@ -1,6 +1,7 @@
 svg{
-	height: 500px;
+	height: 360px;
 	width: 100%;
+	margin-top: 40px;
 }
 
 body {
@@ -9,4 +10,91 @@ body {
 
 .donut{
 	transform: translate(540px,250px) rotate(-120deg);
+}
+
+#title{
+	font-size: 24px;
+	font-weight: 700;
+}
+
+header, #controls {
+	top: 10px;
+	position: relative;
+	width: 640px;
+	left: 50%;
+	margin-left: -320px;
+}
+
+.col-md-2{
+	width: auto;
+}
+
+.check {
+	float: left;
+    width: 60px;
+    margin: 0px;
+    height: 26px;
+    border: 1px solid #000;
+    border-right: none;
+    
+    text-align: center;
+    padding-top: 4px;
+    height: 28px;
+    cursor: pointer;
+}
+
+.check.selected {
+	background: #000;
+	color: #fff;
+}
+
+.checkGender {
+	width: 80px !important;
+}
+
+.opt{
+	margin-top: 4px;
+	height: 38px;
+}
+
+.checkGender:first-child, .checkAge:first-child{
+	border-radius: 5px 0px 0px 5px;
+}
+
+.checkGender:last-child{
+	border-radius: 0px 5px 5px 0px;
+	border-right: 1px solid #000;
+	float: clear;
+}
+
+.checkAge:last-child{
+	border-radius: 0px 5px 5px 0px;
+	border-right: 1px solid #000;
+	float: clear;
+}
+
+@media (max-width: 600px) {
+	header, #controls{
+		width: auto;
+		left: 20px;
+		margin: 0;
+	}
+}
+
+@media (max-width: 460px) {
+	.check {
+		width: 45px;
+		font-size: 12px;
+		padding-top: 4px;
+		height: 28px;
+	}
+}
+
+@media (max-width: 359px) {
+	.check {
+		width: 40px;
+		font-size: 12px;
+		padding-top: 4px;
+		height: 28px;
+	}
 }
