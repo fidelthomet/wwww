@@ -1,7 +1,7 @@
 var ageband = ["18-24", "25-34", "35-44", "45-54", "55-64", "65-74", "75+"],
 	genderNames = ["männlich", "weiblich"],
 	width, height,
-	svg, bar, barMax, arc, pie, radius,
+	svg, bar, sympathyMax, probabilityMax, arc, pie, radius,
 	barHeight = 40,
 	barChart, donutChart
 
@@ -81,9 +81,13 @@ function initGraph() {
 
 	radius = Math.min(width, height) / 2
 
-	barMax = d3.scale.linear()
+	sympathyMax = d3.scale.linear()
 		.range([0, width])
 		.domain([0, 10])
+
+	probabilityMax = d3.scale.linear()
+		.range([0, width])
+		.domain([0, .4])
 
 	barChart = d3.select("#chart").append("svg")
 		.append("g")
@@ -184,57 +188,37 @@ function drawSympathy(selectedData) {
 	barChart.attr("height", barHeight * selectedData.length);
 
 	$(".bar").remove()
-	$(".arc").remove()
 
 	bar = barChart.selectAll("g")
 		.data(selectedData)
 		.enter().append("g")
 		.attr("transform", function(d, i) {
-			return "translate(0," + i * (barHeight+10) + ")";
+			return "translate("+(window.innerWidth/2)+"," + i * (barHeight+10) + ")";
 		})
 		.attr("class", "bar")
 
 	bar.append("rect")
 		.attr("width", function(d) {
-			return barMax(d.sympathy);
+			return sympathyMax(d.sympathy);
+		})
+		.attr("transform", function(d) {
+			return "translate(-"+(sympathyMax(d.sympathy)+20)+",0)"
 		})
 		.attr("height", barHeight - 1)
 		.attr("fill", function(d) {
 			return colors[d.party]
 		})
 
-	//results
-	var totalSympathy = 0
-	selectedData.forEach(function(d) {
-		totalSympathy += d.sympathy
-	})
-	// selectedData.push({
-	// 	party: "none",
-	// 	sympathy: .5 * totalSympathy
-	// })
-	var g = donutChart.selectAll(".arc")
-		.data(pie(selectedData))
-		.enter().append("g")
-		.attr("class", "arc");
-
-	g.append("path")
-		.attr("d", arc)
-		.attr("class", "arcDonut")
-		.style("fill", function(d) {
-			return colors[d.data.party]
-		});
-
-	g.append("text")
-		.attr("transform", function(d) {
-			return "translate(" + arc.centroid(d) + ") rotate(120)";
+	bar.append("rect")
+		.attr("width", function(d) {
+			console.log(d.probability)
+			return probabilityMax(d.probability);
 		})
-		.attr("dy", ".35em")
-
-	.style("text-anchor", "middle")
-		.text(function(d) {
-			if (d.data.party == "none") {
-				return ""
-			} else return d.data.party;
-		});
-
+		.attr("transform", function(d) {
+			return "translate(0,0)"
+		})
+		.attr("height", barHeight - 1)
+		.attr("fill", function(d) {
+			return colors[d.party]
+		})
 }
