@@ -1,7 +1,7 @@
 var ageband = ["18-24", "25-34", "35-44", "45-54", "55-64", "65-74", "75+"],
 	genderNames = ["männlich", "weiblich"],
 	width, height,
-	svg, bar, barMax, arc, pie, radius,
+	svg, bar, barMax, arc, pie, radius, xAxis,
 	barHeight = 40,
 	barChart, donutChart
 
@@ -84,6 +84,10 @@ function initGraph() {
 	barMax = d3.scale.linear()
 		.range([0, width])
 		.domain([0, 10])
+
+	xAxis = d3.svg.axis()
+	xAxis.scale( barMax)
+	xAxis.orient( "bottom")
 
 	barChart = d3.select("#chart").append("svg")
 		.append("g")
@@ -181,7 +185,7 @@ function getValues(gender, age) {
 
 function drawSympathy(selectedData) {
 	//sympathy
-	barChart.attr("height", barHeight * selectedData.length);
+	barChart.attr("height", barHeight * selectedData.length + 25)
 
 	$(".bar").remove()
 	$(".arc").remove()
@@ -190,7 +194,7 @@ function drawSympathy(selectedData) {
 		.data(selectedData)
 		.enter().append("g")
 		.attr("transform", function(d, i) {
-			return "translate(0," + i * (barHeight+10) + ")";
+			return "translate(0," + (i * (barHeight+10) + 25) + ")";
 		})
 		.attr("class", "bar")
 
@@ -202,6 +206,8 @@ function drawSympathy(selectedData) {
 		.attr("fill", function(d) {
 			return colors[d.party]
 		})
+
+	barChart.append("g").call( xAxis)
 
 	//results
 	var totalSympathy = 0
