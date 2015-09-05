@@ -1,7 +1,7 @@
 var ageband = ["18-24", "25-34", "35-44", "45-54", "55-64", "65-74", "75+"],
 	genderNames = ["männlich", "weiblich"],
 	width, height,
-	svg, bar, barMax, arc, pie, radius, xAxis,
+	svg, bar, sympathyMax, probabilityMax, arc, pie, radius, xAxis,
 	barHeight = 40,
 	barChart, donutChart
 
@@ -73,21 +73,24 @@ function getData() {
 }
 
 function initGraph() {
-	width = Math.min(window.innerWidth / 2 -40, 480)
+	width = Math.min(window.innerWidth / 2 - 40, 480)
 	height = window.innerHeight
 
-	
-	
+
 
 	radius = Math.min(width, height) / 2
 
-	barMax = d3.scale.linear()
+	sympathyMax = d3.scale.linear()
 		.range([0, width])
 		.domain([0, 10])
 
 	xAxis = d3.svg.axis()
-	xAxis.scale( barMax)
+	xAxis.scale( sympathyMax)
 	xAxis.orient( "bottom")
+
+	probabilityMax = d3.scale.linear()
+		.range([0, width])
+		.domain([0, .4])
 
 	barChart = d3.select("#chart").append("svg")
 		.append("g")
@@ -127,7 +130,7 @@ function getValues(gender, age) {
 
 	var totalWeight = 0
 
-	groups.forEach( function(group){
+	groups.forEach(function(group) {
 		if ((gender.indexOf(group.Geschlecht) != -1) && (age.indexOf(group.Alter) != -1)) {
 			totalWeight += parseFloat(group.Anteil)
 		}
@@ -141,7 +144,7 @@ function getValues(gender, age) {
 		if ((gender.indexOf(d.Geschlecht) != -1) && (age.indexOf(d.Alter) != -1)) {
 			var weight = 0
 
-			groups.forEach( function(group){
+			groups.forEach(function(group) {
 				if ((d.Geschlecht == group.Geschlecht) && (d.Alter == group.Alter)) {
 					weight += parseFloat(group.Anteil)
 				}
@@ -188,19 +191,21 @@ function drawSympathy(selectedData) {
 	barChart.attr("height", barHeight * selectedData.length + 25)
 
 	$(".bar").remove()
-	$(".arc").remove()
 
 	bar = barChart.selectAll("g")
 		.data(selectedData)
 		.enter().append("g")
 		.attr("transform", function(d, i) {
-			return "translate(0," + (i * (barHeight+10) + 25) + ")";
+			return "translate(" + (window.innerWidth / 2) + "," + (i * (barHeight+10) + 25) + ")";
 		})
 		.attr("class", "bar")
 
 	bar.append("rect")
 		.attr("width", function(d) {
-			return barMax(d.sympathy);
+			return sympathyMax(d.sympathy);
+		})
+		.attr("transform", function(d) {
+			return "translate(-" + (sympathyMax(d.sympathy) + 30) + ",0)"
 		})
 		.attr("height", barHeight - 1)
 		.attr("fill", function(d) {
@@ -209,38 +214,39 @@ function drawSympathy(selectedData) {
 
 	barChart.append("g").call( xAxis)
 
-	//results
-	var totalSympathy = 0
-	selectedData.forEach(function(d) {
-		totalSympathy += d.sympathy
-	})
-	// selectedData.push({
-	// 	party: "none",
-	// 	sympathy: .5 * totalSympathy
-	// })
-	var g = donutChart.selectAll(".arc")
-		.data(pie(selectedData))
-		.enter().append("g")
-		.attr("class", "arc");
-
-	g.append("path")
-		.attr("d", arc)
-		.attr("class", "arcDonut")
-		.style("fill", function(d) {
-			return colors[d.data.party]
-		});
-
-	g.append("text")
+	bar.append("rect")
+		.attr("width", function(d) {
+			return probabilityMax(d.probability);
+		})
 		.attr("transform", function(d) {
-			return "translate(" + arc.centroid(d) + ") rotate(120)";
+			return "translate(30,0)"
+		})
+		.attr("height", barHeight - 1)
+		.attr("fill", function(d) {
+			return colors[d.party]
+		})
+
+	bar.append("rect")
+		.attr("width", "58")
+		.attr("transform", function(d) {
+			return "translate(-29,0)"
+		})
+		.attr("height", barHeight - 1)
+		.attr("fill", function(d) {
+			return colors[d.party]
+		})
+		.attr("fill-opacity", ".5")
+
+	bar.append("text").attr("transform", function(d) {
+			return "translate(0,20)";
 		})
 		.attr("dy", ".35em")
-
-	.style("text-anchor", "middle")
+		.attr("dy", ".35em")
+		.style("text-anchor", "middle")
 		.text(function(d) {
-			if (d.data.party == "none") {
+			if (d.party == "none") {
 				return ""
-			} else return d.data.party;
+			} else return d.party;
 		});
 
 }
