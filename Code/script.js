@@ -159,16 +159,17 @@ function getValues(gender, age) {
 
 function drawSympathy(selectedData) {
 	//sympathy
-	barChart.attr("height", barHeight * selectedData.length + 25)
+	barChart.attr("height", barHeight * selectedData.length + 64)
 
 	$(".bar").remove()
 	$(".axis").remove()
+	$(".text").remove()
 
 	bar = barChart.selectAll("g")
 		.data(selectedData)
 		.enter().append("g")
 		.attr("transform", function(d, i) {
-			return "translate(" + (window.innerWidth / 2) + "," + (i * (barHeight+10) + 25) + ")";
+			return "translate(" + (window.innerWidth / 2) + "," + (i * (barHeight+10) + 64) + ")";
 		})
 		.attr("class", "bar")
 
@@ -186,7 +187,7 @@ function drawSympathy(selectedData) {
 
 	barChart.append("g")
 		.attr("transform", function(d) {
-			return "translate(" + (window.innerWidth / 2 - 30 - sympathyMax(10)) + ",0)"
+			return "translate(" + (window.innerWidth / 2 - 30 - sympathyMax(10)) + ",39)"
 		})
 		.attr("class", "axis")
 		.call( sympathyAxis)
@@ -228,11 +229,28 @@ function drawSympathy(selectedData) {
 
 	barChart.append("g")
 		.attr("transform", function(d) {
-			return "translate(" + (window.innerWidth / 2 + 30) + ",0)"
+			return "translate(" + (window.innerWidth / 2 + 30) + ",39)"
 		})
 		.attr("class", "axis")
 		.call( probabilityAxis)
 
+	barChart.append("text").attr("transform", function(d) {
+			return "translate(" + (window.innerWidth / 2 - 30 - sympathyMax(5)) + ",20)";
+		})
+		.attr("dy", ".35em")
+		.attr("dy", ".35em")
+		.style("text-anchor", "middle")
+		.text("Sympathiewerte")
+		.attr("class", "text")
+
+	barChart.append("text").attr("transform", function(d) {
+			return "translate(" + (window.innerWidth / 2 + 30 + width / 2) + ",20)";
+		})
+		.attr("dy", ".35em")
+		.attr("dy", ".35em")
+		.style("text-anchor", "middle")
+		.text("Wähleranteil")
+		.attr("class", "text")
 
 }
 
