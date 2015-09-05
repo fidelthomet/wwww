@@ -73,11 +73,10 @@ function getData() {
 }
 
 function initGraph() {
-	width = Math.min(window.innerWidth / 2 -40, 480)
+	width = Math.min(window.innerWidth / 2 - 40, 480)
 	height = window.innerHeight
 
-	
-	
+
 
 	radius = Math.min(width, height) / 2
 
@@ -127,7 +126,7 @@ function getValues(gender, age) {
 
 	var totalWeight = 0
 
-	groups.forEach( function(group){
+	groups.forEach(function(group) {
 		if ((gender.indexOf(group.Geschlecht) != -1) && (age.indexOf(group.Alter) != -1)) {
 			totalWeight += parseFloat(group.Anteil)
 		}
@@ -141,7 +140,7 @@ function getValues(gender, age) {
 		if ((gender.indexOf(d.Geschlecht) != -1) && (age.indexOf(d.Alter) != -1)) {
 			var weight = 0
 
-			groups.forEach( function(group){
+			groups.forEach(function(group) {
 				if ((d.Geschlecht == group.Geschlecht) && (d.Alter == group.Alter)) {
 					weight += parseFloat(group.Anteil)
 				}
@@ -193,7 +192,7 @@ function drawSympathy(selectedData) {
 		.data(selectedData)
 		.enter().append("g")
 		.attr("transform", function(d, i) {
-			return "translate("+(window.innerWidth/2)+"," + i * (barHeight+10) + ")";
+			return "translate(" + (window.innerWidth / 2) + "," + i * (barHeight + 10) + ")";
 		})
 		.attr("class", "bar")
 
@@ -202,7 +201,7 @@ function drawSympathy(selectedData) {
 			return sympathyMax(d.sympathy);
 		})
 		.attr("transform", function(d) {
-			return "translate(-"+(sympathyMax(d.sympathy)+20)+",0)"
+			return "translate(-" + (sympathyMax(d.sympathy) + 30) + ",0)"
 		})
 		.attr("height", barHeight - 1)
 		.attr("fill", function(d) {
@@ -211,14 +210,37 @@ function drawSympathy(selectedData) {
 
 	bar.append("rect")
 		.attr("width", function(d) {
-			console.log(d.probability)
 			return probabilityMax(d.probability);
 		})
 		.attr("transform", function(d) {
-			return "translate(0,0)"
+			return "translate(30,0)"
 		})
 		.attr("height", barHeight - 1)
 		.attr("fill", function(d) {
 			return colors[d.party]
 		})
+
+	bar.append("rect")
+		.attr("width", "58")
+		.attr("transform", function(d) {
+			return "translate(-29,0)"
+		})
+		.attr("height", barHeight - 1)
+		.attr("fill", function(d) {
+			return colors[d.party]
+		})
+		.attr("fill-opacity", ".5")
+
+	bar.append("text").attr("transform", function(d) {
+			return "translate(0,20)";
+		})
+		.attr("dy", ".35em")
+		.attr("dy", ".35em")
+		.style("text-anchor", "middle")
+		.text(function(d) {
+			if (d.party == "none") {
+				return ""
+			} else return d.party;
+		});
+
 }
