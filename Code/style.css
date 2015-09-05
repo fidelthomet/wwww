@@ -52,6 +52,10 @@ header, #controls {
 	width: 80px !important;
 }
 
+.text {
+	cursor: pointer;
+}
+
 .opt{
 	margin-top: 4px;
 	height: 38px;

@@ -70,13 +70,13 @@ function initGraph() {
 		.range([0, width])
 		.domain([10, 0])
 
-	sympathyAxis = d3.svg.axis().scale( sympathyScale)
+	sympathyAxis = d3.svg.axis().scale(sympathyScale)
 
 	probabilityMax = d3.scale.linear()
 		.range([0, width])
 		.domain([0, 40])
 
-	probabilityAxis = d3.svg.axis().scale( probabilityMax)
+	probabilityAxis = d3.svg.axis().scale(probabilityMax)
 
 	barChart = d3.select("#chart").append("svg")
 		.append("g")
@@ -170,7 +170,7 @@ function drawSympathy(selectedData) {
 		.data(selectedData)
 		.enter().append("g")
 		.attr("transform", function(d, i) {
-			return "translate(" + (window.innerWidth / 2) + "," + (i * (barHeight+10) + 64) + ")";
+			return "translate(" + (window.innerWidth / 2) + "," + (i * (barHeight + 10) + 64) + ")";
 		})
 		.attr("class", "bar")
 
@@ -191,7 +191,7 @@ function drawSympathy(selectedData) {
 			return "translate(" + (window.innerWidth / 2 - 30 - sympathyMax(10)) + ",39)"
 		})
 		.attr("class", "axis")
-		.call( sympathyAxis)
+		.call(sympathyAxis)
 
 	bar.append("rect")
 		.attr("width", function(d) {
@@ -233,7 +233,7 @@ function drawSympathy(selectedData) {
 			return "translate(" + (window.innerWidth / 2 + 30) + ",39)"
 		})
 		.attr("class", "axis")
-		.call( probabilityAxis)
+		.call(probabilityAxis)
 
 	barChart.append("text").attr("transform", function(d) {
 			return "translate(" + (window.innerWidth / 2 - 30 - sympathyMax(5)) + ",20)";
@@ -242,7 +242,12 @@ function drawSympathy(selectedData) {
 		.attr("dy", ".35em")
 		.style("text-anchor", "middle")
 		.text("Sympathiewerte")
-		.attr("class", "text")
+		.attr("class", "text labelSym")
+
+	$(".labelSym").click(function() {
+		sortBy = "sympathy"
+		redraw()
+	})
 
 	barChart.append("text").attr("transform", function(d) {
 			return "translate(" + (window.innerWidth / 2 + 30 + width / 2) + ",20)";
@@ -251,29 +256,35 @@ function drawSympathy(selectedData) {
 		.attr("dy", ".35em")
 		.style("text-anchor", "middle")
 		.text("Wähleranteil")
-		.attr("class", "text")
+		.attr("class", "text labelProb")
+
+
+	$(".labelProb").click(function() {
+		sortBy = "probability"
+		redraw()
+	})
 
 }
 
-function redraw(){
+function redraw() {
 	var ages = []
-		$(".checkAge.selected").each(function(i, el) {
-			ages.push(ageband[$(el).attr("value")])
-		})
+	$(".checkAge.selected").each(function(i, el) {
+		ages.push(ageband[$(el).attr("value")])
+	})
 
 	var gender = []
-		$(".checkGender.selected").each(function(i, el) {
-			gender.push(genderNames[$(el).attr("value")])
-		})
+	$(".checkGender.selected").each(function(i, el) {
+		gender.push(genderNames[$(el).attr("value")])
+	})
 
 	drawSympathy(getValues(gender, ages))
 }
 
-function compare(a,b) {
-  if (a[sortBy] < b[sortBy])
-    return 1;
-  if (a[sortBy] > b[sortBy])
-    return -1;
-  return 0;
+function compare(a, b) {
+	if (a[sortBy] < b[sortBy])
+		return 1;
+	if (a[sortBy] > b[sortBy])
+		return -1;
+	return 0;
 
 }
