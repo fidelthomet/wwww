@@ -1,6 +1,6 @@
 var ageband = ["18-24", "25-34", "35-44", "45-54", "55-64", "65-74", "75+"],
 	genderNames = ["männlich", "weiblich"],
-	width, height, sympathyWidth, sympathyHeight,
+	width, height,
 	svg, bar, barMax, arc, pie, radius,
 	barHeight = 40,
 	barChart, donutChart
@@ -73,16 +73,16 @@ function getData() {
 }
 
 function initGraph() {
-	width = window.innerWidth
+	width = Math.min(window.innerWidth / 2 -40, 480)
 	height = window.innerHeight
 
-	sympathyWidth = width / 2 - 40
-	sympathyHeight = height - 120
+	
+	
 
-	radius = Math.min(sympathyWidth, sympathyHeight) / 2
+	radius = Math.min(width, height) / 2
 
 	barMax = d3.scale.linear()
-		.range([0, sympathyWidth])
+		.range([0, width])
 		.domain([0, 10])
 
 	barChart = d3.select("#chart").append("svg")
@@ -100,7 +100,7 @@ function initGraph() {
 	pie = d3.layout.pie()
 		.sort(null)
 		.value(function(d) {
-			return d.sympathy;
+			return d.probability;
 		});
 
 
@@ -190,7 +190,7 @@ function drawSympathy(selectedData) {
 		.data(selectedData)
 		.enter().append("g")
 		.attr("transform", function(d, i) {
-			return "translate(0," + i * barHeight + ")";
+			return "translate(0," + i * (barHeight+10) + ")";
 		})
 		.attr("class", "bar")
 
@@ -208,10 +208,10 @@ function drawSympathy(selectedData) {
 	selectedData.forEach(function(d) {
 		totalSympathy += d.sympathy
 	})
-	selectedData.push({
-		party: "none",
-		sympathy: .5 * totalSympathy
-	})
+	// selectedData.push({
+	// 	party: "none",
+	// 	sympathy: .5 * totalSympathy
+	// })
 	var g = donutChart.selectAll(".arc")
 		.data(pie(selectedData))
 		.enter().append("g")

@@ -1,6 +1,10 @@
 svg{
 	height: 500px;
-	width: 850px;
+	width: 100%;
+}
+
+body {
+	font-family: font-family: "jaf-facitweb",sans-serif;
 }
 
 .donut{
