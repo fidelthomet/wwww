@@ -3,7 +3,8 @@ var ageband = ["18-24", "25-34", "35-44", "45-54", "55-64", "65-74", "75+"],
 	width, height,
 	svg, bar, sympathyMax, probabilityMax, sympathyAxis, probabilityAxis,
 	barHeight = 40,
-	barChart
+	barChart,
+	sortBy = "sympathy"
 
 var colors = {
 	SP: "#FF173E",
@@ -34,17 +35,7 @@ $(function() {
 
 		$(this).toggleClass("selected")
 
-		var ages = []
-		$(".checkAge.selected").each(function(i, el) {
-			ages.push(ageband[$(el).attr("value")])
-		})
-
-		var gender = []
-		$(".checkGender.selected").each(function(i, el) {
-			gender.push(genderNames[$(el).attr("value")])
-		})
-
-		drawSympathy(getValues(gender, ages))
+		redraw()
 	})
 })
 
@@ -161,6 +152,7 @@ function getValues(gender, age) {
 	}
 
 	//console.log(values)
+	values.sort(compare)
 
 	return (values)
 }
@@ -240,5 +232,29 @@ function drawSympathy(selectedData) {
 		})
 		.attr("class", "axis")
 		.call( probabilityAxis)
+
+
+}
+
+function redraw(){
+	var ages = []
+		$(".checkAge.selected").each(function(i, el) {
+			ages.push(ageband[$(el).attr("value")])
+		})
+
+	var gender = []
+		$(".checkGender.selected").each(function(i, el) {
+			gender.push(genderNames[$(el).attr("value")])
+		})
+
+	drawSympathy(getValues(gender, ages))
+}
+
+function compare(a,b) {
+  if (a[sortBy] < b[sortBy])
+    return 1;
+  if (a[sortBy] > b[sortBy])
+    return -1;
+  return 0;
 
 }
