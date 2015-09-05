@@ -24,29 +24,24 @@ $(function() {
 	getData();
 
 	for (var age in ageband) {
-		$("#ages").append('<div class="checkbox"><label><input type="checkbox" class="checkAge" value="' + age + '">' + ageband[age] + '</label></div>');
+		$("#ages .opt").append('<div class="check checkAge" value="' + age + '">' + ageband[age] + '</div>');
 	};
 	for (var gender in genderNames) {
-		if (gender != "b")
-			$("#genders").append('<div class="checkbox"><label><input type="checkbox" class="checkGender" value="' + gender + '">' + genderNames[gender] + '</label></div>');
+		$("#genders .opt").append('<div class="check checkGender" value="' + gender + '">' + genderNames[gender] + '</div>');
 	};
 
-	$(".checkAge, .checkGender").change(function() {
+	$(".checkAge, .checkGender").click(function() {
 
-
+		$(this).toggleClass("selected")
 
 		var ages = []
-		$(".checkAge").each(function(i, el) {
-			if ($(el).prop('checked')) {
-				ages.push(ageband[el.value])
-			}
+		$(".checkAge.selected").each(function(i, el) {
+			ages.push(ageband[$(el).attr("value")])
 		})
 
 		var gender = []
-		$(".checkGender").each(function(i, el) {
-			if ($(el).prop('checked')) {
-				gender.push(genderNames[el.value])
-			}
+		$(".checkGender.selected").each(function(i, el) {
+			gender.push(genderNames[$(el).attr("value")])
 		})
 
 		drawSympathy(getValues(gender, ages))
