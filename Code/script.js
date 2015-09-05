@@ -69,13 +69,14 @@ function initGraph() {
 	var sympathyScale = d3.scale.linear()
 		.range([0, width])
 		.domain([10, 0])
-	sympathyAxis = d3.svg.axis().scale( sympathyScale).orient( "bottom")
+
+	sympathyAxis = d3.svg.axis().scale( sympathyScale)
 
 	probabilityMax = d3.scale.linear()
 		.range([0, width])
-		.domain([0, .4])
+		.domain([0, 40])
 
-	probabilityAxis = d3.svg.axis().scale( probabilityMax).orient( "bottom")
+	probabilityAxis = d3.svg.axis().scale( probabilityMax)
 
 	barChart = d3.select("#chart").append("svg")
 		.append("g")
@@ -147,7 +148,7 @@ function getValues(gender, age) {
 			val.sympathy += d.sympathy * d.weight / totalWeight
 			val.probability += d.probability * d.weight / totalWeight
 		})
-
+		val.probability *= 100
 		values.push(val)
 	}
 
