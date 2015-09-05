@@ -12,12 +12,31 @@ body {
 	transform: translate(540px,250px) rotate(-120deg);
 }
 
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.symAxis text, .probAxis text{
+	display: none;
+}
+
+.symAxis .tick:first-child text, .symAxis .tick:nth-child(11) text, .symAxis .tick:nth-child(6) text,
+.probAxis .tick:nth-child(1) text, .probAxis .tick:nth-child(3) text, .probAxis .tick:nth-child(5) text, .probAxis .tick:nth-child(7) text, .probAxis .tick:nth-child(9) text  {
+	
+	display: block
+
+}
+
+
 #title{
 	font-size: 24px;
 	font-weight: 700;
 }
 
-header, #controls {
+header, #controls, #source {
 	top: 10px;
 	position: relative;
 	width: 640px;
@@ -80,7 +99,7 @@ header, #controls {
 }
 
 @media (max-width: 600px) {
-	header, #controls{
+	header, #controls, #source{
 		width: auto;
 		left: 20px;
 		margin: 0;

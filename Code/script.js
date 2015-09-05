@@ -71,6 +71,8 @@ function initGraph() {
 		.domain([10, 0])
 
 	sympathyAxis = d3.svg.axis().scale(sympathyScale)
+	.orient("bottom")
+	.ticks(10, ",1s")
 
 	probabilityMax = d3.scale.linear()
 		.range([0, width])
@@ -189,9 +191,9 @@ function drawSympathy(selectedData) {
 
 	barChart.append("g")
 		.attr("transform", function(d) {
-			return "translate(" + (window.innerWidth / 2 - 30 - sympathyMax(10)) + ",39)"
+			return "translate(" + (window.innerWidth / 2 - 30 - sympathyMax(10)) + ",34)"
 		})
-		.attr("class", "axis")
+		.attr("class", "axis symAxis")
 		.call(sympathyAxis)
 
 	bar.append("rect")
@@ -231,9 +233,9 @@ function drawSympathy(selectedData) {
 
 	barChart.append("g")
 		.attr("transform", function(d) {
-			return "translate(" + (window.innerWidth / 2 + 30) + ",39)"
+			return "translate(" + (window.innerWidth / 2 + 30) + ",34)"
 		})
-		.attr("class", "axis")
+		.attr("class", "axis probAxis")
 		.call(probabilityAxis)
 
 	var symLabel = barChart.append("text")
@@ -261,7 +263,7 @@ function drawSympathy(selectedData) {
 		})
 		.attr("dy", ".35em")
 		.style("text-anchor", "left")
-		.text("Wähleranteil")
+		.text("Wähleranteil %")
 		.attr("class", "text labelProb")
 
 
@@ -301,5 +303,4 @@ function compare(a, b) {
 	if (a[sortBy] > b[sortBy])
 		return -1;
 	return 0;
-
 }
