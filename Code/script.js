@@ -11,7 +11,7 @@ var colors = {
 	FDP: "#1153A9",
 	CVP: "#F99929",
 	EDU: "#000",
-	GP: "#82BB61",
+	GPS: "#82BB61",
 	GLP: "#C2D82E",
 	BDP: "#FFDF00",
 	PdA: "#000",
