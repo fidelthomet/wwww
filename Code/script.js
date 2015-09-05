@@ -1,9 +1,9 @@
 var ageband = ["18-24", "25-34", "35-44", "45-54", "55-64", "65-74", "75+"],
 	genderNames = ["männlich", "weiblich"],
 	width, height,
-	svg, bar, sympathyMax, probabilityMax, arc, pie, radius, xAxis,
+	svg, bar, sympathyMax, probabilityMax, sympathyAxis, probabilityAxis,
 	barHeight = 40,
-	barChart, donutChart
+	barChart
 
 var colors = {
 	SP: "#FF173E",
@@ -76,40 +76,24 @@ function initGraph() {
 	width = Math.min(window.innerWidth / 2 - 40, 480)
 	height = window.innerHeight
 
-
-
-	radius = Math.min(width, height) / 2
-
 	sympathyMax = d3.scale.linear()
 		.range([0, width])
 		.domain([0, 10])
 
-	xAxis = d3.svg.axis()
-	xAxis.scale( sympathyMax)
-	xAxis.orient( "bottom")
+	var sympathyScale = d3.scale.linear()
+		.range([0, width])
+		.domain([10, 0])
+	sympathyAxis = d3.svg.axis().scale( sympathyScale).orient( "bottom")
 
 	probabilityMax = d3.scale.linear()
 		.range([0, width])
 		.domain([0, .4])
 
+	probabilityAxis = d3.svg.axis().scale( probabilityMax).orient( "bottom")
+
 	barChart = d3.select("#chart").append("svg")
 		.append("g")
 		.attr("class", "sympathy")
-
-	donutChart = d3.select("svg")
-		.append("g")
-		.attr("class", "donut")
-
-	arc = d3.svg.arc()
-		.outerRadius(radius - 10)
-		.innerRadius(radius - 130);
-
-	pie = d3.layout.pie()
-		.sort(null)
-		.value(function(d) {
-			return d.probability;
-		});
-
 
 	drawSympathy(getValues())
 }
@@ -191,6 +175,7 @@ function drawSympathy(selectedData) {
 	barChart.attr("height", barHeight * selectedData.length + 25)
 
 	$(".bar").remove()
+	$(".axis").remove()
 
 	bar = barChart.selectAll("g")
 		.data(selectedData)
@@ -212,7 +197,12 @@ function drawSympathy(selectedData) {
 			return colors[d.party]
 		})
 
-	barChart.append("g").call( xAxis)
+	barChart.append("g")
+		.attr("transform", function(d) {
+			return "translate(" + (window.innerWidth / 2 - 30 - sympathyMax(10)) + ",0)"
+		})
+		.attr("class", "axis")
+		.call( sympathyAxis)
 
 	bar.append("rect")
 		.attr("width", function(d) {
@@ -248,5 +238,12 @@ function drawSympathy(selectedData) {
 				return ""
 			} else return d.party;
 		});
+
+	barChart.append("g")
+		.attr("transform", function(d) {
+			return "translate(" + (window.innerWidth / 2 + 30) + ",0)"
+		})
+		.attr("class", "axis")
+		.call( probabilityAxis)
 
 }
